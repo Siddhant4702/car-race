@@ -1,0 +1,113 @@
+input : file system  number
+output : locked  buffer 
+
+
+{
+    while(buffer not found){
+        if(block is on hash queue){
+            if(buffer busy){
+                sleep(event buffer become free);
+                continue;
+            }
+             marked buffer busy
+            remover buffer from the free list;
+            return buffer;
+
+        }
+        else{
+            if(there are no buffer on freelist){
+                sleep(event )
+                continue;
+            }
+            if(buffer marked as delayed write){
+                asynchronioues  write buffer to disk;
+                continue;
+            }
+            remove buffer from old hash q;
+            put buffer in new hash queue
+            return buffer ;
+        }
+    }
+}
+
+
+
+brelse
+input: locked buffer 
+output : none
+
+{
+    wakeup all process : event, waiting for any buffer to become free
+    wake up all process :event,wating for this buffer to become free
+    raise processor execution  level to block interupt
+    if(buffer content valid and buffer not old){
+            enqueue buffer at the end of freelist
+    }
+    else
+    eneque buffer at the beginning of the freelist
+    lower the proceses execution level to allow interupt;
+    unlock(buffer);
+}
+
+
+
+bred
+input: file system block number
+output : buffer contianer data
+
+{
+ get buffer for block;
+ if(buffer data valid)
+ return buffer
+ initite read buffer;
+ sleep(event buffer read disk complete);
+ return(buffer);
+}
+
+
+
+bwrite 
+input :buffer 
+output: none
+{
+   initite disk write
+   if(i/o sychronous){
+    sleep(event i/o complete)
+    relase buffer algo brelese
+   }
+   else if(marked buffer for delayed write){
+    marked buffer to put in head of free list;
+   }
+}
+
+
+
+iget
+input: file sys inode number
+output: loced inode 
+
+{
+    while(not found){
+        if(inode on inode cache){
+            if(inode lock){
+                sleep(event unlock the buffer );
+                continue;
+            }
+            if(inode on freelist){
+                    remove from the freelist
+                    increment the reference count;
+                    return inode
+            }
+            if(no inode on inode frelist)
+                return error;
+
+                remove new indode from frelist
+                reset inode number and file sys.
+                remove inode from old hash queue, place on new one
+                read inode on disk
+                initilize inode
+                return (inode);
+
+        }
+    }
+}
